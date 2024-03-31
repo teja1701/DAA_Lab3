@@ -1,1 +1,1 @@
-Topological sorting of the graph: 3 0 1 2 
+Topological sorting of the graph: 0 3 1 2 

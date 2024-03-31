@@ -1,70 +1,66 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
-// Function to perform DFS and topological sorting
-void topologicalSortUtil(int v, vector<vector<int> >& adj,vector<bool>& visited,stack<int>& Stack)
-{
-	// Mark the current node as visited
-	visited[v] = true;
-
-	// Recur for all adjacent vertices
-	for (int i : adj[v]) {
-		if (!visited[i])
-			topologicalSortUtil(i, adj, visited, Stack);
-	}
-
-	// Push current vertex to stack which stores the result
-	Stack.push(v);
-}
-
-// Function to perform Topological Sort
-void topologicalSort(vector<vector<int> >& adj, int V)
-{
-	stack<int> Stack; // Stack to store the result
-	vector<bool> visited(V, false);
-
-	// Call the recursive helper function to store
-	// Topological Sort starting from all vertices one by
-	// one
-	for (int i = 0; i < V; i++) {
-		if (!visited[i])
-			topologicalSortUtil(i, adj, visited, Stack);
-	}
-
-	// Print contents of stack
-	while (!Stack.empty()) {
-		cout << Stack.top() << " ";
-		Stack.pop();
-	}
-}
-
-int main()
-{
-    freopen("input.txt","r",stdin); 
-    freopen("output.txt","w",stdout); 
-    int V,e; cin>>V>>e; 
-    vector<vector<int>> adj(V+1); 
-    for(int i = 0; i < e; i++)
-    {
-        int u,v; cin>>u>>v; 
-        adj[u].push_back(v); 
+vector<int> topologicalSort(vector<vector<int>>& adj, int V) {
+    vector<int> indegree(V, 0);
+    for (int i = 0; i < V; ++i) {
+        for (int it : adj[i]) {
+            indegree[it]++;
+        }
     }
-	// // Number of nodes
-	// int V = 4;
 
-	// // Edges
-	// vector<vector<int> > edges
-	// 	= { { 0, 1 }, { 1, 2 }, { 3, 1 }, { 3, 2 } };
+    queue<int> q;
+    for (int i = 0; i < V; ++i) {
+        if (indegree[i] == 0) {
+            q.push(i);
+        }
+    }
 
-	// // Graph represented as an adjacency list
-	// vector<vector<int> > adj(V);
+    vector<int> result;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        result.push_back(node);
 
-	// for (auto i : edges) {
-	// 	adj[i[0]].push_back(i[1]);
-	// }
+        for (int it : adj[node]) {
+            indegree[it]--;
+            if (indegree[it] == 0) {
+                q.push(it);
+            }
+        }
+    }
 
-	cout << "Topological sorting of the graph: ";
-	topologicalSort(adj, V);
+    if (result.size() != V) {
+        cout << "Graph contains a cycle!" << endl;
+        return {};
+    }
 
-	// return 0;
+    return result;
 }
+
+int main() {
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> edges(m, vector<int>(2));
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i][0] >> edges[i][1];
+    }
+    vector<vector<int>> adj(n);
+    for (auto i : edges) {
+        adj[i[0]].push_back(i[1]);
+    }
+    cout << "Topological sorting of the graph: ";
+    vector<int> result = topologicalSort(adj, n);
+
+    for (auto i : result) {
+        cout << i << " ";
+    }
+
+    return 0;
+}
+
+
+

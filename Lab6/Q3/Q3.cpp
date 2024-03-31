@@ -1,17 +1,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+#include <bits/stdc++.h>
+using namespace std;
+
 class GFG {
 public:
 	// dfs Function to reach destination
-	bool dfs(int curr, int des, vector<vector<int> >& adj,vector<int>& vis)
+	bool dfs(int curr, int des, vector<vector<int> >& adj,
+			vector<int>& vis)
 	{
+
 		// If curr node is destination return true
-		if (curr == des) return true;
+		if (curr == des) {
+			return true;
+		}
 		vis[curr] = 1;
 		for (auto x : adj[curr]) {
 			if (!vis[x]) {
-				if (dfs(x, des, adj, vis)) return true;
+				if (dfs(x, des, adj, vis)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -27,7 +36,8 @@ public:
 
 	// Function to return all the strongly connected
 	// component of a graph.
-	vector<vector<int> > findSCC(int n,vector<vector<int> >& a)
+	vector<vector<int> > findSCC(int n,
+								vector<vector<int> >& a)
 	{
 		// Stores all the strongly connected components.
 		vector<vector<int> > ans;
@@ -38,7 +48,9 @@ public:
 
 		vector<vector<int> > adj(n + 1);
 
-		for (int i = 0; i < a.size(); i++) adj[a[i][0]].push_back(a[i][1]);
+		for (int i = 0; i < a.size(); i++) {
+			adj[a[i][0]].push_back(a[i][1]);
+		}
 
 		// Traversing all the vertices
 		for (int i = 1; i <= n; i++) {
@@ -80,14 +92,16 @@ int main()
     freopen("input.txt","r",stdin); 
     freopen("output.txt","w",stdout); 
 	GFG obj;
-	int V,e; cin>>V>>e; 
-    vector<vector<int>> adj(V+1);  
+    int v,e; cin>>v>>e; 
+    vector<vector<int>> adj(v+1); 
+     
     for(int i = 0; i < e; i++)
     {
         int u,v; cin>>u>>v; 
         adj[u].push_back(v); 
     }
-	vector<vector<int> > ans = obj.findSCC(V, adj);
+	
+	vector<vector<int> > ans = obj.findSCC(v, adj);
 	cout << "Strongly Connected Components are:\n";
 	for (auto x : ans) {
 		for (auto y : x) {
