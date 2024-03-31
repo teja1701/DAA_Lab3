@@ -1,0 +1,3 @@
+Maximum Profit: 60
+Jobs done:
+3 1 
