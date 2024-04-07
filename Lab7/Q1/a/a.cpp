@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool cmp(pair<int,int> a,pair<int,int> b){
+bool cmp(pair<double,double> a,pair<double,double> b){
     double p1=double(a.first/a.second);
     double p2=double(b.first/b.second);
     if(p1!=p2)
@@ -9,7 +9,7 @@ bool cmp(pair<int,int> a,pair<int,int> b){
     return a.first>b.first;
 }
 
-int knp(int W,pair<int,int> p[],int n){
+int knp(int W,pair<double,double> p[],int n){
     sort(p,p+n,cmp);
     int ans=0;
     for(int i=0;i<n;i++){
@@ -27,8 +27,8 @@ int main(){
     freopen("output.txt", "w", stdout);
     int n,W;
     cin>>n>>W;
-    pair<int,int> p[n];
-    int values[n],weights[n];
+    pair<double,double> p[n];
+    double values[n],weights[n];
    
     for(int i=0;i<n;i++) cin>>values[i];
     for(int i=0;i<n;i++) cin>>weights[i];

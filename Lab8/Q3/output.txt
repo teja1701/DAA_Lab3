@@ -1,0 +1,2 @@
+MST: 110
+Second Best MST: 121
