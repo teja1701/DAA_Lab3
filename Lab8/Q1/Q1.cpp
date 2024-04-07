@@ -1,121 +1,69 @@
-#include <bits/stdc++.h> 
+#include<bits/stdc++.h>
 using namespace std; 
 
-// DSU data structure 
-// path compression + rank by union 
-class DSU { 
-	int* parent; 
-	int* rank; 
+struct edge
+{
+    int u,v,w; 
+};
 
-public: 
-	DSU(int n) 
-	{ 
-		parent = new int[n]; 
-		rank = new int[n]; 
-
-		for (int i = 0; i < n; i++) { 
-			parent[i] = -1; 
-			rank[i] = 1; 
-		} 
-	} 
-
-	// Find function 
-	int find(int i) 
-	{ 
-		if (parent[i] == -1) 
-			return i; 
-
-		return parent[i] = find(parent[i]); 
-	} 
-
-	// Union function 
-	void unite(int x, int y) 
-	{ 
-		int s1 = find(x); 
-		int s2 = find(y); 
-
-		if (s1 != s2) { 
-			if (rank[s1] < rank[s2]) { 
-				parent[s1] = s2; 
-			} 
-			else if (rank[s1] > rank[s2]) { 
-				parent[s2] = s1; 
-			} 
-			else { 
-				parent[s2] = s1; 
-				rank[s1] += 1; 
-			} 
-		} 
-	} 
-}; 
-
-class Graph { 
-	vector<vector<int> > edgelist; 
-	int V; 
-
-public: 
-	Graph(int V) { this->V = V; } 
-
-	// Function to add edge in a graph 
-	void addEdge(int x, int y, int w) 
-	{ 
-		edgelist.push_back({ w, x, y }); 
-	} 
-
-	void kruskals_mst() 
-	{ 
-		// Sort all edges 
-		sort(edgelist.begin(), edgelist.end()); 
-
-		// Initialize the DSU 
-		DSU s(V); 
-		int ans = 0; 
-		cout << "Following are the edges in the "
-				"constructed MST"
-			<< endl; 
-		for (auto edge : edgelist) { 
-			int w = edge[0]; 
-			int x = edge[1]; 
-			int y = edge[2]; 
-
-			// Take this edge in MST if it does 
-			// not forms a cycle 
-			if (s.find(x) != s.find(y)) { 
-				s.unite(x, y); 
-				ans += w; 
-				cout << x << " -- " << y << " == " << w 
-					<< endl; 
-			} 
-		} 
-		cout << "Minimum Cost Spanning Tree: " << ans; 
-	} 
-}; 
-
-// Driver code 
-int main() 
-{ 
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-
-    int V; // Number of vertices
-    cin >> V;
-
-    vector<vector<int>> edgelist;
-    int w, x, y;
-    while (cin >> w >> x >> y) {
-        edgelist.push_back({w, x, y});
+struct UnionFind
+{
+    vector<int> parent; 
+    vector<int> set_size; 
+    void init(int sz)
+    {
+        parent.assign(sz+1,0); 
+        set_size.assign(sz+1,1); 
+        iota(parent.begin(),parent.end(),0); 
     }
-
-    Graph g(V);
-    for (auto edge : edgelist) {
-        int w = edge[0];
-        int x = edge[1];
-        int y = edge[2];
-        g.addEdge(x, y, w);
+    int find(int s)
+    {
+        if (s == parent[s])
+            return s;
+        return parent[s] = find(parent[s]);
     }
+    void merge(int u, int v)
+    {
+        u = find(u); 
+        v = find(v); 
+        if(set_size[u] > set_size[v])
+            swap(u,v); 
+        parent[u] = v; 
+    }
+};
 
-    // Function call 
-    g.kruskals_mst(); 
+int main()
+{
+    freopen("input.txt","r",stdin); 
+    freopen("output.txt","w",stdout); 
 
-    return 0; 
+    int n,e; cin>>n>>e; 
+    vector<edge> edges(e); 
+    vector<edge> mst_edges;
+    long long wt = 0; 
+    for(int i = 0; i < e; i++)
+    {
+        cin>>edges[i].u>>edges[i].v>>edges[i].w; 
+    }
+    sort(edges.begin(),edges.end(),[](auto a, auto b)
+    {
+        return a.w > b.w; 
+    }); 
+    UnionFind UF; 
+    UF.init(n); 
+    for(int i = 0; i < e && mst_edges.size() < n; i++)
+    {
+        if(UF.find(edges[i].u) != UF.find(edges[i].v)) 
+        {
+            UF.merge(edges[i].u,edges[i].v); 
+            mst_edges.push_back(edges[i]); 
+            wt += edges[i].w; 
+        }
+    }
+    cout<<"Weight: "<<wt<<"\n"; 
+    cout<<"Edges are: \n";
+    for(auto edge : mst_edges)
+    {
+        cout<<edge.u<<" "<<edge.v<<" "<<edge.w<<"\n"; 
+    } 
 }
